@@ -1,0 +1,20 @@
+name: Listar arquivos do repositório
+
+on:
+  workflow_dispatch:
+
+jobs:
+  listar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fazer checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Mostrar data e hora
+        run: |
+          echo "📅 Execução em: $(date '+%d/%m/%Y %H:%M:%S')"
+
+      - name: Listar arquivos
+        run: |
+          echo "🗂️ Arquivos no repositório:"
+          ls -la
