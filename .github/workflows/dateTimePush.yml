@@ -1,0 +1,22 @@
+name: Push com data e Tempo
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show message and time
+        run: |
+          echo "🗓️ Data e hora do push (ou execução manual):"
+          echo "------------------------------------------"
+          echo "Data e hora UTC: $(date -u)"
+          echo "Data e hora local: $(date)"
+          echo "------------------------------------------"
+          echo "Autor do último commit:"
+          git log -1 --pretty=format:'%an - %ar'
