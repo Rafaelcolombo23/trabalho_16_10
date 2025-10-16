@@ -7,9 +7,6 @@ jobs:
   calcular:
     runs-on: ubuntu-latest
     steps:
-      - name: Mostrar data e hora do push
-        run: echo "🕒 Data e hora: $(date)"
-
       - name: Definir variável com resultado
         run: |
           resultado=$((2 + 2))
