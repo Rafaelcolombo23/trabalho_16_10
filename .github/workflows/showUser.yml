@@ -1,0 +1,21 @@
+name: Mostrar autor
+
+on:
+  workflow_dispatch:
+
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show user
+        run: |
+          echo "👤 Usuário do último push:"
+          git log -1 --pretty=format:'Autor: %an <%ae>'
+          echo ""
+          echo "------------------------------------------"
+          echo "📦 Commit mais recente:"
+          git log -1 --pretty=format:'Mensagem: %s'
