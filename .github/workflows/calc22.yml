@@ -1,0 +1,22 @@
+name: Calcular 2 + 2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  calcular:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mostrar data e hora do push
+        run: echo "🕒 Data e hora: $(date)"
+
+      - name: Definir variável com resultado
+        run: |
+          resultado=$((2 + 2))
+          echo "O resultado de 2 + 2 é $resultado"
+          echo "resultado=$resultado" >> $GITHUB_ENV
+
+      - name: Exibir variável armazenada
+        run: echo "A variável resultado é $resultado"
+        env:
+          resultado: ${{ env.resultado }}
