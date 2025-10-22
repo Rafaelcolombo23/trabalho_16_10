@@ -1,0 +1,27 @@
+name: Rodar apenas aos sábados
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * *" # Tenta rodar todo dia ao meio-dia
+
+jobs:
+  sabado:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar dia da semana
+        run: |
+          dia=$(date +%u)
+          if [ "$dia" -eq 6 ]; then
+            echo "📅 Hoje é sábado — executando tarefa!"
+            echo "Arquivo criado no sábado" > sabado.txt
+          else
+            echo "🚫 Não é sábado — saindo..."
+            exit 0
+          fi
+
+      - name: Upload do arquivo
+        uses: actions/upload-artifact@v4
+        with:
+          name: sabado
+          path: sabado.txt
