@@ -1,0 +1,56 @@
+name: Relatório de arquivos do repositório
+
+on:
+  workflow_dispatch:
+
+jobs:
+  relatorio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Mostrar data e hora da execução
+        run: |
+          echo "📅 Data e hora atual:"
+          date
+
+      - name: 👤 Mostrar usuário que iniciou o workflow
+        run: |
+          echo "👤 Usuário que iniciou este workflow:"
+          echo "${{ github.actor }}"
+
+      - name: 📦 Fazer checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: 🔍 Contar arquivos HTML
+        run: |
+          total_html=$(find . -type f -name "*.html" | wc -l)
+          echo "🧩 Total de arquivos HTML: $total_html"
+
+      - name: 🎨 Contar arquivos CSS
+        run: |
+          total_css=$(find . -type f -name "*.css" | wc -l)
+          echo "🎨 Total de arquivos CSS: $total_css"
+
+      - name: ⚙️ Contar arquivos JavaScript
+        run: |
+          total_js=$(find . -type f -name "*.js" | wc -l)
+          echo "⚙️ Total de arquivos JS: $total_js"
+
+      - name: 📝 Gerar relatório final
+        run: |
+          echo "Relatório de Análise - $(date)" > relatorio.txt
+          echo "Usuário que executou: ${{ github.actor }}" >> relatorio.txt
+          echo "" >> relatorio.txt
+          echo "Arquivos encontrados:" >> relatorio.txt
+          echo "- HTML: $(find . -type f -name '*.html' | wc -l)" >> relatorio.txt
+          echo "- CSS:  $(find . -type f -name '*.css' | wc -l)" >> relatorio.txt
+          echo "- JS:   $(find . -type f -name '*.js' | wc -l)" >> relatorio.txt
+          echo "" >> relatorio.txt
+          echo "✅ Fim da verificação." >> relatorio.txt
+          cat relatorio.txt
+
+      - name: 📤 Enviar relatório como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-de-arquivos
+          path: relatorio.txt
