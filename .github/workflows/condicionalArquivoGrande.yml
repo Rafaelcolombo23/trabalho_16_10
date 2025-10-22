@@ -1,0 +1,22 @@
+name: Alerta de arquivos grandes
+
+on:
+  workflow_dispatch:
+
+jobs:
+  alerta:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Verificar arquivos maiores que 100 KB
+        run: |
+          grandes=$(find . -type f -size +100k)
+          if [ -n "$grandes" ]; then
+            echo "⚠️ Atenção! Existem arquivos maiores que 100 KB:"
+            echo "$grandes"
+            exit 1
+          else
+            echo "✅ Nenhum arquivo acima de 100 KB encontrado."
+          fi
