@@ -1,0 +1,23 @@
+name: Criar arquivo de texto
+
+on:
+  workflow_dispatch:
+
+jobs:
+  criar-arquivo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Criar arquivo de texto
+        run: |
+          echo "Criando arquivo mensagem.txt..."
+          echo "Olá! 👋" > mensagem.txt
+          echo "Este arquivo foi criado automaticamente por um workflow do GitHub Actions." >> mensagem.txt
+          echo "Data e hora de criação: $(date)" >> mensagem.txt
+          cat mensagem.txt
+
+      - name: Fazer upload do arquivo como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: mensagem
+          path: mensagem.txt
