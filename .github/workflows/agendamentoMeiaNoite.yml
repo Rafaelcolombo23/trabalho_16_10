@@ -1,0 +1,33 @@
+name: Contar arquivos diariamente à meia-noite
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # roda todo dia à meia-noite (UTC)
+  workflow_dispatch: # permite rodar manualmente também
+
+jobs:
+  contagem:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: 📅 Mostrar data e hora da execução
+        run: |
+          echo "📅 Data e hora da execução:"
+          date
+
+      - name: 🔢 Contar quantidade total de arquivos
+        run: |
+          total=$(find . -type f | wc -l)
+          echo "📁 Total de arquivos encontrados: $total"
+          echo "Arquivos totais: $total" > contagem.txt
+          echo "Data da contagem: $(date)" >> contagem.txt
+          cat contagem.txt
+
+      - name: 📤 Salvar resultado como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: contagem-de-arquivos
+          path: contagem.txt
