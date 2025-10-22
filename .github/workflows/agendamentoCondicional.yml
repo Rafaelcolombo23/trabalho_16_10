@@ -1,0 +1,60 @@
+name: Agendamento Condicional
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *" # roda de hora em hora (ajuste se quiser outra frequência)
+
+jobs:
+  agendar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verificar horário (rodar apenas à noite)
+        id: horario
+        run: |
+          hora=$(date +%H)
+          if [ $hora -ge 20 ] || [ $hora -lt 6 ]; then
+            echo "É noite ($hora h) ✅"
+            echo "continuar=true" >> $GITHUB_OUTPUT
+          else
+            echo "Agora é dia ($hora h) ❌ - o job será cancelado."
+            echo "continuar=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Verificar dia da semana (rodar apenas aos sábados)
+        if: steps.horario.outputs.continuar == 'true'
+        id: dia
+        run: |
+          dia_semana=$(date +%u) # 6 = sábado
+          if [ "$dia_semana" -eq 6 ]; then
+            echo "Hoje é sábado ✅"
+            echo "continuar=true" >> $GITHUB_OUTPUT
+          else
+            echo "Hoje não é sábado ❌ - cancelando job."
+            echo "continuar=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Criar e verificar arquivos
+        if: steps.dia.outputs.continuar == 'true'
+        run: |
+          echo "Criando arquivo exemplo.txt..."
+          echo "Gerado em $(date)" > exemplo.txt
+          echo "Teste de agendamento noturno" >> exemplo.txt
+
+          echo "Verificando arquivos maiores que 100 KB..."
+          grandes=$(find . -type f -size +100k)
+          if [ -n "$grandes" ]; then
+            echo "⚠️ Atenção! Existem arquivos maiores que 100 KB:"
+            echo "$grandes"
+            exit 1
+          else
+            echo "✅ Nenhum arquivo acima de 100 KB encontrado."
+          fi
+
+      - name: Upload do arquivo (se tudo OK)
+        if: steps.dia.outputs.continuar == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: arquivo-exemplo
+          path: exemplo.txt
